@@ -57,11 +57,26 @@ app.post("/api/sessions", async (req, res) => {
     const protocol = req.socket.encrypted? 'https' : 'http';
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.sessions({
-      amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
-      countryCode: "NL",
+      amount: { currency: "BRL", value: 1000 }, // value is R$ 10 in minor units
+      countryCode: "BR",
       merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT, // required
       reference: orderRef, // required: your Payment Reference
-      returnUrl: `${protocol}://${localhost}/api/handleShopperRedirect?orderRef=${orderRef}` // set redirect URL required for some payment methods
+      returnUrl: `${protocol}://${localhost}/api/handleShopperRedirect?orderRef=${orderRef}`, // set redirect URL required for some payment methods
+      shopperName: {
+        firstName: 'Rubens',
+        lastName: 'Ribeiro',
+      },
+      shopperLocale: 'pr-BR',
+      shopperEmail: 'teste.rubens@printi.com.br',
+      socialSecurityNumber: '32003280880',
+      billingAddress: {
+        city: 'Sao Paulo',
+        country: 'BR',
+        houseNumberOrName: '1',
+        postalCode: '01257090',
+        stateOrProvince: 'SP',
+        street: 'Rua Teste',
+      },
     });
 
     res.json(response);

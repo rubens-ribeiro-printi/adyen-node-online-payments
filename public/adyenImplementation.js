@@ -39,42 +39,56 @@ async function finalizeCheckout() {
 }
 
 async function createAdyenCheckout(session) {
-  
     const configuration = {
         clientKey,
-        locale: "en_US",
+        locale: "pt_BR",
         environment: "test",  // change to live for production
         showPayButton: true,
         session: session,
         paymentMethodsConfiguration: {
-            ideal: {
-                showImage: true
-            },
             card: {
                 hasHolderName: true,
                 holderNameRequired: true,
                 name: "Credit or debit card",
                 amount: {
                     value: 1000,
-                    currency: "EUR"
+                    currency: "BRL"
                 }
             },
-            paypal: {
-                amount: {
-                    currency: "USD",
-                    value: 1000
+            boletobancario: {
+                personalDetailsRequired: false,
+                billingAddressRequired: false,
+                showEmailAddress: false,
+/*
+                data: {
+                    firstName: 'Rubens',
+                    lastName: 'Ribeiro',
+                    socialSecurityNumber: '32003280880',
+                    billingAddress: {
+                        city: 'São Paulo',
+                        country: 'BR',
+                        houseNumberOrName: '123',
+                        postalCode: '01257090',
+                        stateOrProvince: 'SP',
+                        street: 'Rua Teste',
+                    },
+                    shopperEmail: 'teste.rubens@test.com',
                 },
-                environment: "test",
-                countryCode: "US"   // Only needed for test. This will be automatically retrieved when you are in production.
-            }
+*/
+            },
         },
         onPaymentCompleted: (result, component) => {
+            console.log("ON PAYMENT COMPLETED");
+            console.log("RESULT", result);
+            console.log("COMPONENT", component);
             handleServerResponse(result, component);
         },
         onError: (error, component) => {
             console.error(error.name, error.message, error.stack, component);
         }
     };
+
+    console.log("CONFIG", configuration);
 
     return new AdyenCheckout(configuration);
 }
